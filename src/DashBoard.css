@@ -1,4 +1,29 @@
 img {
   width: 100px;
-  height: 100px;
+  height: 80px;
+}
+
+*{
+  background: white;
+}
+
+.dash{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.card-container, .text-center{
+  display: flex;
+  justify-content: center;
+}
+
+.card-container{
+  
+  display: grid;
+}
+
+.button:hover{
+  background: #111;
+  cursor: ;
 }

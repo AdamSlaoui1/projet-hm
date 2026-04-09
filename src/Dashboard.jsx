@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./DashBoard.css";
+import Card from "./Component/Card";
  
-const API_URL = "http://localhost:3000";
+const BACKEND_URL = "http://localhost:3001";
  
 function Dashboard() {
-  const [data, setData] = useState({ temp: null, hum: null, soil: null });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
- 
+  const [data, setData] = useState(
+    { 
+      temp: null,
+      hum: null,
+      soil: null,
+    }
+  );
+  
   useEffect(() => {
     fetchData();
     const id = setInterval(fetchData, 60000);
@@ -17,65 +22,59 @@ function Dashboard() {
  
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/data`);
+      const res = await axios.get(`${BACKEND_URL}/api/data`);
       setData(res.data);
     } catch {
-      setMessage("Erreur : impossible de récupérer les données.");
+      console.log("Erreur")
     }
   };
  
   const ArroserPlante = async () => {
-    setLoading(true);
-    setMessage("");
+    
     try {
-      await axios.post(`${API_URL}/api/pump`);
-      setMessage("Suceess");
+      await axios.post(`${BACKEND_URL}/api/pump`);
+      console.log("Success")
     } catch {
-      setMessage("Erreur");
-    } finally {
-      setLoading(false);
+      console.log("Erreur")
     }
   };
  
-  const TempAmb = () => (
-    <div className="card1">
-      <img src="/temp.jpg" alt="Température" />
-      <h5>Température ambiante</h5>
-      <p>{data.temp !== null ? `${data.temp} °C` : "-- °C"}</p>
-    </div>
-  );
- 
-  const HumiditeAmb = () => (
-    <div className="card2">
-      <img src="/air.jpg" alt="Humidité Air" />
-      <h5>Humidité de l'air</h5>
-      <p>{data.hum !== null ? `${data.hum} %` : "-- %"}</p>
-    </div>
-  );
- 
-  const HumiditeSol = () => (
-    <div className="card3">
-      <img src="ground.webp" alt="Humidité Sol" />
-      <h5>Humidité du sol</h5>
-      <p>{data.soil !== null ? `${data.soil} %` : "-- %"}</p>
-    </div>
-  );
  
   return (
     <div className="navbar">
-      <h1>Dashboard Plante</h1>
+      <h1 className="dash">Dashboard Plante</h1>
  
       <div className="card-container">
-        <TempAmb />
-        <HumiditeAmb />
-        <HumiditeSol />
+  
+        <Card
+          className = "card1"
+          image = "/temp.jpg"
+          desc = "Température ambiante"
+          donnee = {data.temp !== null ? `${data.temp} °C` : "-- °C"}
+
+        />
+
+        <Card
+          className = "card2"
+          image = "/air.jpg"
+          desc = "Humidité de l'air"
+          donnee = {data.hum !== null ? `${data.hum} %` : "-- %"}
+        />
+
+        <Card
+          className = "card3"
+          image = "ground.webp"
+          desc = "Humidité du sol"
+          donnee = {data.soil !== null ? `${data.soil} %` : "-- %"}
+
+        />
       </div>
  
-      <div className="text-center mt-4">
-        <button className="btn btn-success btn-lg" onClick={ArroserPlante} disabled={loading}>
-          {loading ? "Activation..." : "Arroser la plante"}
+      <div className="text-center ">
+        <button className="button" onClick={ArroserPlante} >
+          <h4>Arroser la plante</h4>
         </button>
-        {message && <p className="mt-2">{message}</p>}
+        {/*Message d'erreur dans la console */}
       </div>
     </div>
   );
